@@ -37,6 +37,8 @@ class SetAdmin extends Component {
     this.props.parentFail();
   }
 
+  const admins = await admin.methods.getAdmins().call()
+  console.log(admins)
   };
 
   render() {

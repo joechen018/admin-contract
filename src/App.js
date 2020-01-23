@@ -9,11 +9,14 @@ class App extends Component {
 
   state = {
     owner: '',
+    admins: '',
+    unlockers: '',
     message: '',
     address: '',
     password: '',
     status: ''
   };
+
 
   setUser = async (address, password, admin, unlocker) => {
     this.setState({address: address});
@@ -53,8 +56,52 @@ class App extends Component {
   }
 
   async componentDidMount() {
+
+    // var newAdminEvent = await admin.NewAdmin();
+
+    // Or pass a callback to start watching immediately
+    // console.log(admin.events)
+    // var newAdminEvent = admin.NewAdmin(function(error, result) {
+    //     if (!error)
+    //         console.log(result);
+    // });
+    let opts = {
+        from_stable_block_index: 0
+    };
+    let utility = {
+        init: function () {
+            // Start
+            utility.EventTest();
+        },
+        //Event
+        EventTest () {
+            admin.getPastEvents('NewAdmin', opts)
+                .then(function (events) {
+                    //
+                    console.log(events);
+
+                    // Control whether to continue
+                    if (true) {
+                        utility.EventTest();
+                    }
+                });
+
+        }
+    }
+    utility.init();
+
+    // admin.getPastEvents('NewAdmin', {
+    //     from_stable_block_index: 0
+    // }).then(function (events) {
+    //         console.log(events)
+    //     });
+
     const owner = await admin.methods.owner().call();
     this.setState({ owner });
+    let admins = await admin.methods.getAdmins().call();
+    this.setState({ admins });
+    let unlockers = await admin.methods.getUnlockers().call();
+    this.setState({ unlockers });
     this.setState({message: "CZR Account Login:"});
   }
 
@@ -83,7 +130,13 @@ class App extends Component {
       <div>
         <h2>Incentives Contract</h2>
         <p>
-          This contract is owned by {this.state.owner}.
+          Owner: {this.state.owner}
+        </p>
+        <p>
+          Admins: {this.state.admins}
+        </p>
+        <p>
+          Unlockers: {this.state.unlockers}
         </p>
         <h3>
           Contract Priviledges:

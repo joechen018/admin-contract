@@ -56,6 +56,20 @@
     type: "function"
   },
   {
+    constant: true,
+    inputs: [],
+    name: "getAdmins",
+    outputs: [
+      {
+        name: "",
+        type: "address[]"
+      }
+    ],
+    payable: false,
+    stateMutability: "view",
+    type: "function"
+  },
+  {
     constant: false,
     inputs: [
       {
@@ -103,6 +117,20 @@
     type: "function"
   },
   {
+    constant: true,
+    inputs: [],
+    name: "getUnlockers",
+    outputs: [
+      {
+        name: "",
+        type: "address[]"
+      }
+    ],
+    payable: false,
+    stateMutability: "view",
+    type: "function"
+  },
+  {
     constant: false,
     inputs: [
       {
@@ -135,5 +163,65 @@
     payable: false,
     stateMutability: "nonpayable",
     type: "constructor"
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        name: "addr",
+        type: "address"
+      }
+    ],
+    name: "NewOwner",
+    type: "event"
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        name: "addr",
+        type: "address"
+      }
+    ],
+    name: "NewAdmin",
+    type: "event"
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        name: "addr",
+        type: "address"
+      }
+    ],
+    name: "LostAdmin",
+    type: "event"
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        name: "addr",
+        type: "address"
+      }
+    ],
+    name: "NewUnlocker",
+    type: "event"
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        name: "addr",
+        type: "address"
+      }
+    ],
+    name: "LostUnlocker",
+    type: "event"
   }
 ]
