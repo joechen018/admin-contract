@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import Login from './login';
-import SetAdmin from './setAdmin';
+import PriviledgeDropdown from './priviledgeDropdown'
 
 import './App.css';
 import admin from './abi';
@@ -14,9 +14,50 @@ class App extends Component {
     message: '',
     address: '',
     password: '',
-    status: ''
+    status: '',
+    function: [
+              {
+                id: 0,
+                title: 'Set Admin',
+                selected: false,
+                key: 'function'
+              },
+              {
+                id: 1,
+                title: 'Remove Admin',
+                selected: false,
+                key: 'function'
+              },
+              {
+                id: 2,
+                title: 'Set Unlocker',
+                selected: false,
+                key: 'function'
+              },
+              {
+                id: 3,
+                title: 'Remove Unlocker',
+                selected: false,
+                key: 'function'
+              },
+              {
+                id: 4,
+                title: 'Transfer Ownership',
+                selected: false,
+                key: 'function'
+              }
+            ]
   };
 
+
+  resetThenSet = (id, key) => {
+      let temp = JSON.parse(JSON.stringify(this.state[key]));
+      temp.forEach(item => item.selected = false);
+      temp[id].selected = true;
+      this.setState({
+        [key]: temp
+      });
+    }
 
   setUser = async (address, password, admin, unlocker) => {
     this.setState({address: address});
@@ -57,50 +98,41 @@ class App extends Component {
 
   async componentDidMount() {
 
-    // var newAdminEvent = await admin.NewAdmin();
 
-    // Or pass a callback to start watching immediately
-    // console.log(admin.events)
-    // var newAdminEvent = admin.NewAdmin(function(error, result) {
-    //     if (!error)
-    //         console.log(result);
-    // });
-    let opts = {
-        from_stable_block_index: 0
-    };
-    let utility = {
-        init: function () {
-            // Start
-            utility.EventTest();
-        },
-        //Event
-        EventTest () {
-            admin.getPastEvents('NewAdmin', opts)
-                .then(function (events) {
-                    //
-                    console.log(events);
-
-                    // Control whether to continue
-                    if (true) {
-                        utility.EventTest();
-                    }
-                });
-
-        }
-    }
-    utility.init();
-
-    // admin.getPastEvents('NewAdmin', {
+    // let opts = {
     //     from_stable_block_index: 0
-    // }).then(function (events) {
-    //         console.log(events)
-    //     });
+    // };
+    // let utility = {
+    //     init: function () {
+    //         // Start
+    //         utility.EventTest();
+    //     },
+    //     //Event
+    //     EventTest () {
+    //         admin.getPastEvents('NewAdmin', opts)
+    //             .then(function (events) {
+    //                 //
+    //                 console.log(events);
+    //
+    //                 // Control whether to continue
+    //                 if (true) {
+    //                     utility.EventTest();
+    //                 }
+    //             });
+    //
+    //     }
+    // }
+    // utility.init();
 
     const owner = await admin.methods.owner().call();
     this.setState({ owner });
     let admins = await admin.methods.getAdmins().call();
+    admins = admins.filter(item => item !== "0x0000000000000000000000000000000000000000")
+    admins = admins.join(", ");
     this.setState({ admins });
     let unlockers = await admin.methods.getUnlockers().call();
+    unlockers = unlockers.filter(item => item !== "0x0000000000000000000000000000000000000000")
+    unlockers = unlockers.join(", ");
     this.setState({ unlockers });
     this.setState({message: "CZR Account Login:"});
   }
@@ -153,11 +185,17 @@ class App extends Component {
               contract = {admin}
               parentlogin = {this.logging}
               parentloginfail = {this.logfailed}/>
-        <SetAdmin parentAddress = {this.state.address}
+        <h4>
+                Adjust Priviledges:
+        </h4>
+        <PriviledgeDropdown parentAddress = {this.state.address}
                   parentPassword = {this.state.password}
                   parentWaiting = {this.waiting}
                   parentSuccess = {this.success}
-                  parentFail = {this.failed}/>
+                  parentFail = {this.failed}
+                  title="Select Option"
+                  list={this.state.function}
+                  resetThenSet={this.resetThenSet}/>
         <h4>{this.state.status}</h4>
         <hr />
         </div>

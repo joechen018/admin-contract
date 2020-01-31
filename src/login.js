@@ -15,7 +15,7 @@ class Login extends Component {
     event.preventDefault();
     let code = 9;
     this.props.parentlogin();
-    const result = await this.props.contract.methods.pay().sendBlock(
+    await this.props.contract.methods.pay().sendBlock(
       {
         from: this.state.user,
         password: this.state.pass,
