@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {Form, Dropdown,Input, Button} from 'semantic-ui-react'
 import admin from './abi';
 
 class ViewIncentive extends Component {
@@ -21,20 +22,20 @@ class ViewIncentive extends Component {
   render() {
       return (
       <div>
-
+        <Form onSubmit = {this.viewIncentive}>
         <h4>View Incentive</h4>
-        <form onSubmit = {this.viewIncentive}>
-          <div>
+          <Form.Field>
             <label>Address:</label>
-            <input
+            <Input size="mini"
               name = "address"
               value = {this.state.view_address}
               onChange={event => this.setState({view_address: event.target.value})}
+              placeholder ="czr_address"
             />
-          </div>
-          <button>Enter</button>
-          </form>
-        </div>
+          </Form.Field>
+          <Button type="submit" size="mini">Enter</Button>
+        </Form>
+      </div>
     );
   }
 }

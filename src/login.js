@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {Modal,Icon, Button, Form, Menu} from 'semantic-ui-react'
+import admin from './abi';
 
 class Login extends Component {
 
@@ -16,12 +17,12 @@ class Login extends Component {
   }
 
 
-  setPriviledge = async (owner, admin, unlocker) => {
+  setPriviledge = async (owner, isAdmin, unlocker) => {
     if (this.state.user === owner) {
       this.setState({priviledge: "Owner"});
       this.setState({userString: "Logged in as: " + this.state.user + " (Owner)"});
     }
-    else if(admin) {
+    else if(isAdmin) {
       this.setState({priviledge: "Admin"});
       this.setState({userString: "Logged in as: " + this.state.user + " (Admin)"});
 
@@ -40,7 +41,7 @@ class Login extends Component {
     event.preventDefault();
     let code = 9;
     this.setState({loginMessage: 'Logging in...'});
-    await this.props.contract.methods.pay().sendBlock(
+    await admin.methods.pay().sendBlock(
       {
         from: this.state.user,
         password: this.state.pass,
@@ -55,10 +56,10 @@ class Login extends Component {
                code = 10;
               });
     if(code === 0) {
-      const admin = await this.props.contract.methods.isAdmin(this.state.user).call();
-      const unlocker = await this.props.contract.methods.isUnlocker(this.state.user).call();
-      const owner = await this.props.contract.methods.owner().call();
-      this.setPriviledge(owner, admin, unlocker);
+      const isAdmin = await admin.methods.isAdmin(this.state.user).call();
+      const unlocker = await admin.methods.isUnlocker(this.state.user).call();
+      const owner = await admin.methods.owner().call();
+      this.setPriviledge(owner, isAdmin, unlocker);
       this.onClose();
       this.props.parentCallback(this.state.user, this.state.pass, this.state.priviledge);
       this.setState({loginStatus: 'Log Out'});
@@ -112,11 +113,15 @@ class Login extends Component {
                 {userMessage}
                 <Form.Field>
                   <label>CZR Address:</label>
-                  <input onChange={event => this.setState({user: event.target.value})}/>
+                  <input onChange={event => this.setState({user: event.target.value})}
+                         value = {this.state.user}
+                  />
                 </Form.Field>
                 <Form.Field>
                   <label>Password:</label>
-                  <input type = "password" onChange={event => this.setState({pass: event.target.value})}/>
+                  <input type = "password" onChange={event => this.setState({pass: event.target.value})}
+                          value = {this.state.pass}
+                  />
                 </Form.Field>
                 <Button type="submit">
                   <Icon name='checkmark' /> Log In
@@ -139,23 +144,3 @@ class Login extends Component {
 }
 
 export default Login;
-
-// <form onSubmit = {this.onSubmit}>
-//   <div>
-//     <label>Address:</label>
-//     <input
-//       name = "address"
-//       value = {this.state.user}
-//       onChange={event => this.setState({user: event.target.value})}
-//     />
-//     <div />
-//     <label>Password: </label>
-//     <input
-//       type = "password"
-//       name = "password"
-//       value = {this.state.pass}
-//       onChange={event => this.setState({pass: event.target.value})}
-//     />
-//   </div>
-//   <button>Enter</button>
-// </form>

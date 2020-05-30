@@ -12,7 +12,6 @@ class App extends Component {
 
   state = {
     owner: '',
-    openLogin: '',
     admins: '',
     unlockers: '',
     notif: '',
@@ -20,50 +19,8 @@ class App extends Component {
     address: '',
     password: '',
     loading: '',
-    priviledge: '',
-    function: [
-              {
-                id: 0,
-                title: 'Set Admin',
-                selected: false,
-                key: 'function'
-              },
-              {
-                id: 1,
-                title: 'Remove Admin',
-                selected: false,
-                key: 'function'
-              },
-              {
-                id: 2,
-                title: 'Set Unlocker',
-                selected: false,
-                key: 'function'
-              },
-              {
-                id: 3,
-                title: 'Remove Unlocker',
-                selected: false,
-                key: 'function'
-              },
-              {
-                id: 4,
-                title: 'Transfer Ownership',
-                selected: false,
-                key: 'function'
-              }
-            ]
+    priviledge: ''
   };
-
-
-  resetThenSet = (id, key) => {
-      let temp = JSON.parse(JSON.stringify(this.state[key]));
-      temp.forEach(item => item.selected = false);
-      temp[id].selected = true;
-      this.setState({
-        [key]: temp
-      });
-    }
 
   waiting = (wait) => {
     if(wait === true) {
@@ -105,28 +62,6 @@ class App extends Component {
     });
   }
 
-  async componentDidMount() {
-    this.updateList();
-  }
-
-  // onClick = async (event) => {
-  // event.preventDefault();
-  //
-  // this.setState({message: 'Waiting on transaction success...'});
-  //
-  // const status = await admin.methods.isAdmin(this.state.admin).call();
-  //
-  // console.log(status);
-  // if(status) {
-  //     this.setState({admin_message: "true"});
-  // }
-  // else {
-  //     this.setState({admin_message: "false"});
-  // }
-  // this.setState({message: ''});
-  //
-  // }
-
   setUser = async (address, password, priviledge) => {
     this.setState({
       address,
@@ -141,6 +76,9 @@ class App extends Component {
     });
   }
 
+  async componentDidMount() {
+    this.updateList();
+  }
 
   render() {
     var loading;
@@ -174,8 +112,7 @@ class App extends Component {
 
     return (
       <div>
-        <Login parentCallback = {this.setUser}
-              contract = {admin}/>
+        <Login parentCallback = {this.setUser}/>
         <div id="content" class="ui container">
         {notification}
         <h3>
@@ -205,9 +142,7 @@ class App extends Component {
                       parentWaiting = {this.waiting}
                       parentSuccess = {this.success}
                       parentFail = {this.failed}
-                      title="Select Option"
-                      list={this.state.function}
-                      resetThenSet={this.resetThenSet}/>
+                      />
           </Grid.Column>
           <Grid.Column>
             <AddIncentive parentAddress = {this.state.address}

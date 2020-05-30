@@ -3,7 +3,7 @@ const czr = new Czr();
 let czrUrl = 'http://127.0.0.1:8765/';
 czr.Contract.setProvider(czrUrl);
 
-const address = 'czr_4pzeoqnLGtzbf5zcNM11LyxvTXUNumb5KQqt3C2RJ7HGbpf8xP';
+const address = 'czr_3dDTPo57GqwNNoTMJTBWz5wM56139GXBChJEThtzwWWBizRx3W';
 
 const abi = [
   {

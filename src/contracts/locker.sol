@@ -129,7 +129,8 @@ contract CZRLocker is owned {
         require(amount > 0);
         if (startLockTime == 0)
             startLockTime = now;
-            // should I add else startLockTime = c + now?
+        else
+            startLockTime = startLockTime + now;
         lockedCZRMap[addr].push(LockedCZR(startLockTime, lockMonth, amount, 0));
         uint index = lockedCZRMap[addr].length - 1;
         emit AddLock(addr, index, startLockTime, lockMonth, amount);

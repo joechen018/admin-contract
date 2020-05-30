@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import {Form, Dropdown,Input, Button} from 'semantic-ui-react'
 import admin from './abi';
 import FontAwesome from 'react-fontawesome'
 
@@ -7,43 +8,34 @@ class PriviledgeDropdown extends Component{
     super(props)
     this.state = {
       adjust_address: '',
-      function: '',
-      listOpen: false,
-      headerTitle: this.props.title,
-      func: ''
+      dropdown: ''
     }
-    this.close = this.close.bind(this)
   }
 
   priviledge = async (event) => {
     event.preventDefault();
-    const id = this.state.function;
-    if(id ===0) {
-      await this.setState({func : admin.methods.setAdmin(this.state.adjust_address)});
-      this.adjustPriviledge();
+    const id = this.state.dropdown;
+    if(id === 'Set Admin') {
+      this.adjustPriviledge(admin.methods.setAdmin(this.state.adjust_address));
     }
-    if(id === 1) {
-      await this.setState({func : admin.methods.removeAdmin(this.state.adjust_address)});
-      this.adjustPriviledge();
+    else if(id === 'Remove Admin') {
+      this.adjustPriviledge(admin.methods.removeAdmin(this.state.adjust_address));
     }
-    if(id === 2) {
-      await this.setState({func : admin.methods.setUnlocker(this.state.adjust_address)});
-      this.adjustPriviledge();
+    else if(id === 'Set Unlocker') {
+      this.adjustPriviledge(admin.methods.setUnlocker(this.state.adjust_address));
     }
-    if(id === 3) {
-      await this.setState({func : admin.methods.removeUnlocker(this.state.adjust_address)});
-      this.adjustPriviledge();
+    else if(id === 'Remove Unlocker') {
+      this.adjustPriviledge(admin.methods.removeUnlocker(this.state.adjust_address));
     }
-    if(id === 4) {
-      await this.setState({func : admin.methods.transferOwnership(this.state.adjust_address)});
-      this.adjustPriviledge();
+    else if(id === 'Transfer Ownership') {
+      this.adjustPriviledge(admin.methods.transferOwnership(this.state.adjust_address));
     }
   }
 
-  async adjustPriviledge() {
+  async adjustPriviledge(func) {
       this.props.parentWaiting(true);
       let code = 9;
-      await this.state.func.sendBlock(
+      await func.sendBlock(
         {
           from: this.props.parentAddress,
           password: this.props.parentPassword,		// Sender's account password
@@ -66,75 +58,65 @@ class PriviledgeDropdown extends Component{
       }
   };
 
-  componentDidUpdate(){
-    const { listOpen } = this.state
-    setTimeout(() => {
-      if(listOpen){
-        window.addEventListener('click', this.close)
-      }
-      else{
-        window.removeEventListener('click', this.close)
-      }
-    }, 0)
-  }
-
-  componentWillUnmount(){
-    window.removeEventListener('click', this.close)
-  }
-
-  close(timeOut){
-    this.setState({
-      listOpen: false
-    })
-  }
-
-  selectItem(title, id, stateKey){
-    this.setState({
-      headerTitle: title,
-      listOpen: false,
-      function: id
-    }, this.props.resetThenSet(id, stateKey))
-  }
-
-  toggleList(){
-    this.setState(prevState => ({
-      listOpen: !prevState.listOpen
-    }))
-  }
 
   render(){
-    const{list} = this.props
-    const{listOpen, headerTitle} = this.state
+
+    const options = [
+              {
+                id: 0,
+                text: 'Set Admin',
+                value: 'Set Admin',
+                key: 'Set Admin'
+              },
+              {
+                id: 1,
+                text: 'Remove Admin',
+                value: 'Remove Admin',
+                key: 'Remove Admin'
+              },
+              {
+                id: 2,
+                text: 'Set Unlocker',
+                value: 'Set Unlocker',
+                key: 'Set Unlocker'
+              },
+              {
+                id: 3,
+                text: 'Remove Unlocker',
+                value: 'Remove Unlocker',
+                key: 'Remove Unlocker'
+              },
+              {
+                id: 4,
+                text: 'Transfer Ownership',
+                value: 'Transfer Ownership',
+                key: 'Transfer Ownership'
+              }
+            ];
+
     return(
       <div>
-        <h4>
-                Adjust Priviledges:
-        </h4>
-        <div className="dd-wrapper">
-          <span>Adjustment:</span><div className="dd-header" onClick={() => this.toggleList()}>
-            <div className="dd-header-title">{headerTitle}</div>
-            {listOpen
-              ? <FontAwesome name="angle-up"/>
-              : <FontAwesome name="angle-down"/>
-            }
-          </div>
-          {listOpen && <ul className="dd-list" onClick={e => e.stopPropagation()}>
-            {list.map((item)=> (
-              <li className="dd-list-item" key={item.id} onClick={() => this.selectItem(item.title, item.id, item.key)}>{item.title} {item.selected && <FontAwesome name="check"/>}</li>
-            ))}
-          </ul>}
-          <form onSubmit = {this.priviledge}>
-            <div>
-              <label>Address:</label>
-              <input
-                name = "address"
-                value = {this.state.adjust_address}
-                onChange={event => this.setState({adjust_address: event.target.value})}
-              />
-            </div>
-            <button>Enter</button>
-            </form>
-        </div>
+        <Form onSubmit = {this.priviledge}>
+          <h4>Adjust Priviledges:</h4>
+          <Form.Field>
+            <Dropdown placeholder='Select Option' selection options = {options}
+                      onChange = {(event, data) => this.setState({dropdown: data.value})}
+            />
+          </Form.Field>
+          <Form.Field>
+            <label>Address:</label>
+            <Input size="mini"
+              value = {this.state.adjust_address}
+              onChange={event => this.setState({adjust_address: event.target.value})}
+              placeholder = "czr_address"
+            />
+          </Form.Field>
+          <Form.Field>
+            <Button type="submit" size="mini">
+              Enter
+            </Button>
+          </Form.Field>
+        </Form>
       </div>
     )
   }
