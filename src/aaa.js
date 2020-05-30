@@ -5,6 +5,43 @@
       {
         name: "addr",
         type: "address"
+      },
+      {
+        name: "index",
+        type: "uint256"
+      }
+    ],
+    name: "removeCZRLock",
+    outputs: [],
+    payable: false,
+    stateMutability: "nonpayable",
+    type: "function"
+  },
+  {
+    constant: true,
+    inputs: [
+      {
+        name: "addr",
+        type: "address"
+      }
+    ],
+    name: "lockLength",
+    outputs: [
+      {
+        name: "",
+        type: "uint256"
+      }
+    ],
+    payable: false,
+    stateMutability: "view",
+    type: "function"
+  },
+  {
+    constant: false,
+    inputs: [
+      {
+        name: "addr",
+        type: "address"
       }
     ],
     name: "removeAdmin",
@@ -75,6 +112,32 @@
       {
         name: "addr",
         type: "address"
+      },
+      {
+        name: "startLockTime",
+        type: "uint256"
+      },
+      {
+        name: "amount",
+        type: "uint256"
+      },
+      {
+        name: "lockMonth",
+        type: "uint256"
+      }
+    ],
+    name: "addCZRLock",
+    outputs: [],
+    payable: false,
+    stateMutability: "nonpayable",
+    type: "function"
+  },
+  {
+    constant: false,
+    inputs: [
+      {
+        name: "addr",
+        type: "address"
       }
     ],
     name: "setAdmin",
@@ -117,6 +180,24 @@
     type: "function"
   },
   {
+    constant: false,
+    inputs: [
+      {
+        name: "addr",
+        type: "address"
+      },
+      {
+        name: "limit",
+        type: "uint256"
+      }
+    ],
+    name: "unlockCZR",
+    outputs: [],
+    payable: false,
+    stateMutability: "nonpayable",
+    type: "function"
+  },
+  {
     constant: true,
     inputs: [],
     name: "getUnlockers",
@@ -138,10 +219,59 @@
         type: "address"
       }
     ],
+    name: "test",
+    outputs: [],
+    payable: false,
+    stateMutability: "nonpayable",
+    type: "function"
+  },
+  {
+    constant: false,
+    inputs: [
+      {
+        name: "addr",
+        type: "address"
+      }
+    ],
     name: "setUnlocker",
     outputs: [],
     payable: false,
     stateMutability: "nonpayable",
+    type: "function"
+  },
+  {
+    constant: true,
+    inputs: [
+      {
+        name: "",
+        type: "address"
+      },
+      {
+        name: "",
+        type: "uint256"
+      }
+    ],
+    name: "lockedCZRMap",
+    outputs: [
+      {
+        name: "startLockTime",
+        type: "uint256"
+      },
+      {
+        name: "lockMonth",
+        type: "uint256"
+      },
+      {
+        name: "lockedAmount",
+        type: "uint256"
+      },
+      {
+        name: "unlockedAmount",
+        type: "uint256"
+      }
+    ],
+    payable: false,
+    stateMutability: "view",
     type: "function"
   },
   {
@@ -159,10 +289,75 @@
     type: "function"
   },
   {
-    inputs: [],
-    payable: false,
-    stateMutability: "nonpayable",
-    type: "constructor"
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        name: "addr",
+        type: "address"
+      },
+      {
+        indexed: false,
+        name: "index",
+        type: "uint256"
+      },
+      {
+        indexed: false,
+        name: "startLockTime",
+        type: "uint256"
+      },
+      {
+        indexed: false,
+        name: "lockMonth",
+        type: "uint256"
+      },
+      {
+        indexed: false,
+        name: "lockedAmount",
+        type: "uint256"
+      }
+    ],
+    name: "AddLock",
+    type: "event"
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        name: "addr",
+        type: "address"
+      },
+      {
+        indexed: false,
+        name: "index",
+        type: "uint256"
+      }
+    ],
+    name: "RemoveLock",
+    type: "event"
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        name: "addr",
+        type: "address"
+      },
+      {
+        indexed: false,
+        name: "index",
+        type: "uint256"
+      },
+      {
+        indexed: false,
+        name: "unlockAmount",
+        type: "uint256"
+      }
+    ],
+    name: "Unlock",
+    type: "event"
   },
   {
     anonymous: false,

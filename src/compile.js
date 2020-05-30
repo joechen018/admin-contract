@@ -7,7 +7,7 @@ const stringifyObject = require('stringify-object');
 
 // ABI save End
 
-const srcpath = path.resolve(__dirname,'contracts','admin.sol');
+const srcpath = path.resolve(__dirname,'contracts','locker.sol');
 const source = fs.readFileSync(srcpath,'utf-8');
 
 let input={
@@ -32,8 +32,8 @@ let input={
 }
 
 let output = JSON.parse(solc.compile(JSON.stringify(input)));
-let contractByteCode= output.contracts['admin.sol']['owned'].evm.bytecode.object;
-let abi= output.contracts['admin.sol']['owned']['abi'];
+let contractByteCode= output.contracts['admin.sol']['CZRLocker'].evm.bytecode.object;
+let abi= output.contracts['admin.sol']['CZRLocker']['abi'];
 
 const pretty = stringifyObject(abi, {
     indent: '  ',

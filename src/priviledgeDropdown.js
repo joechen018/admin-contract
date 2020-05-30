@@ -9,35 +9,41 @@ class PriviledgeDropdown extends Component{
       adjust_address: '',
       function: '',
       listOpen: false,
-      headerTitle: this.props.title
+      headerTitle: this.props.title,
+      func: ''
     }
     this.close = this.close.bind(this)
   }
 
-  priviledge = (event) => {
+  priviledge = async (event) => {
     event.preventDefault();
     const id = this.state.function;
     if(id ===0) {
-      this.setAdmin();
+      await this.setState({func : admin.methods.setAdmin(this.state.adjust_address)});
+      this.adjustPriviledge();
     }
     if(id === 1) {
-      this.removeAdmin();
+      await this.setState({func : admin.methods.removeAdmin(this.state.adjust_address)});
+      this.adjustPriviledge();
     }
     if(id === 2) {
-      this.setUnlocker();
+      await this.setState({func : admin.methods.setUnlocker(this.state.adjust_address)});
+      this.adjustPriviledge();
     }
     if(id === 3) {
-      this.removeUnlocker();
+      await this.setState({func : admin.methods.removeUnlocker(this.state.adjust_address)});
+      this.adjustPriviledge();
     }
     if(id === 4) {
-      this.transferOwnership();
+      await this.setState({func : admin.methods.transferOwnership(this.state.adjust_address)});
+      this.adjustPriviledge();
     }
   }
 
-  async transferOwnership() {
-      this.props.parentWaiting();
+  async adjustPriviledge() {
+      this.props.parentWaiting(true);
       let code = 9;
-      await admin.methods.transferOwnership(this.state.adjust_address).sendBlock(
+      await this.state.func.sendBlock(
         {
           from: this.props.parentAddress,
           password: this.props.parentPassword,		// Sender's account password
@@ -51,102 +57,13 @@ class PriviledgeDropdown extends Component{
                }).catch(function (error) {
                   code = 10;
                 });
-
+      this.props.parentWaiting(false);
       if(code === 0) {
-          this.props.parentSuccess();
+          this.props.parentSuccess('Your transaction has been processed on the blockchain.');
       }
       else {
-        this.props.parentFail();
+        this.props.parentFail('Please check your inputs and priviledges. Make sure you are logged in.');
       }
-
-  };
-
-
-  async setAdmin() {
-      this.props.parentWaiting();
-      let code = 9;
-      await admin.methods.setAdmin(this.state.adjust_address).sendBlock(
-        {
-          from: this.props.parentAddress,
-          password: this.props.parentPassword,		// Sender's account password
-        	gas: 2000000,
-        	gas_price: '1000000000',
-        	amount: "0"
-        })
-         .then(data =>
-               {
-                 code = 0;
-               }).catch(function (error) {
-                  code = 10;
-                });
-
-      if(code === 0) {
-          this.props.parentSuccess();
-      }
-      else {
-        this.props.parentFail();
-      }
-
-      const admins = await admin.methods.getAdmins().call()
-      console.log(admins)
-  };
-
-  async setUnlocker() {
-      this.props.parentWaiting();
-      let code = 9;
-      await admin.methods.setUnlocker(this.state.adjust_address).sendBlock(
-        {
-          from: this.props.parentAddress,
-          password: this.props.parentPassword,		// Sender's account password
-          gas: 2000000,
-          gas_price: '1000000000',
-          amount: "0"
-        })
-         .then(data =>
-               {
-                 code = 0;
-               }).catch(function (error) {
-                  code = 10;
-                });
-
-      if(code === 0) {
-          this.props.parentSuccess();
-      }
-      else {
-        this.props.parentFail();
-      }
-
-      const unlockers = await admin.methods.getUnlockers().call()
-      console.log(unlockers)
-  };
-
-  async removeAdmin() {
-      this.props.parentWaiting();
-      let code = 9;
-      await admin.methods.removeAdmin(this.state.adjust_address).sendBlock(
-        {
-          from: this.props.parentAddress,
-          password: this.props.parentPassword,		// Sender's account password
-          gas: 2000000,
-          gas_price: '1000000000',
-          amount: "0"
-        })
-         .then(data =>
-               {
-                 code = 0;
-               }).catch(function (error) {
-                  code = 10;
-                });
-
-      if(code === 0) {
-          this.props.parentSuccess();
-      }
-      else {
-        this.props.parentFail();
-      }
-
-      const admins = await admin.methods.getAdmins().call()
-      console.log(admins)
   };
 
   componentDidUpdate(){
@@ -160,35 +77,6 @@ class PriviledgeDropdown extends Component{
       }
     }, 0)
   }
-
-  async removeUnlocker() {
-      this.props.parentWaiting();
-      let code = 9;
-      await admin.methods.removeUnlocker(this.state.adjust_address).sendBlock(
-        {
-          from: this.props.parentAddress,
-          password: this.props.parentPassword,		// Sender's account password
-          gas: 2000000,
-          gas_price: '1000000000',
-          amount: "0"
-        })
-         .then(data =>
-               {
-                 code = 0;
-               }).catch(function (error) {
-                  code = 10;
-                });
-
-      if(code === 0) {
-          this.props.parentSuccess();
-      }
-      else {
-        this.props.parentFail();
-      }
-
-      const unlockers = await admin.methods.getUnlockers().call()
-      console.log(unlockers)
-  };
 
   componentWillUnmount(){
     window.removeEventListener('click', this.close)
@@ -218,30 +106,35 @@ class PriviledgeDropdown extends Component{
     const{list} = this.props
     const{listOpen, headerTitle} = this.state
     return(
-      <div className="dd-wrapper">
-        <span>Adjustment:</span><div className="dd-header" onClick={() => this.toggleList()}>
-          <div className="dd-header-title">{headerTitle}</div>
-          {listOpen
-            ? <FontAwesome name="angle-up"/>
-            : <FontAwesome name="angle-down"/>
-          }
-        </div>
-        {listOpen && <ul className="dd-list" onClick={e => e.stopPropagation()}>
-          {list.map((item)=> (
-            <li className="dd-list-item" key={item.id} onClick={() => this.selectItem(item.title, item.id, item.key)}>{item.title} {item.selected && <FontAwesome name="check"/>}</li>
-          ))}
-        </ul>}
-        <form onSubmit = {this.priviledge}>
-          <div>
-            <label>Address:</label>
-            <input
-              name = "address"
-              value = {this.state.adjust_address}
-              onChange={event => this.setState({adjust_address: event.target.value})}
-            />
+      <div>
+        <h4>
+                Adjust Priviledges:
+        </h4>
+        <div className="dd-wrapper">
+          <span>Adjustment:</span><div className="dd-header" onClick={() => this.toggleList()}>
+            <div className="dd-header-title">{headerTitle}</div>
+            {listOpen
+              ? <FontAwesome name="angle-up"/>
+              : <FontAwesome name="angle-down"/>
+            }
           </div>
-          <button>Enter</button>
-          </form>
+          {listOpen && <ul className="dd-list" onClick={e => e.stopPropagation()}>
+            {list.map((item)=> (
+              <li className="dd-list-item" key={item.id} onClick={() => this.selectItem(item.title, item.id, item.key)}>{item.title} {item.selected && <FontAwesome name="check"/>}</li>
+            ))}
+          </ul>}
+          <form onSubmit = {this.priviledge}>
+            <div>
+              <label>Address:</label>
+              <input
+                name = "address"
+                value = {this.state.adjust_address}
+                onChange={event => this.setState({adjust_address: event.target.value})}
+              />
+            </div>
+            <button>Enter</button>
+            </form>
+        </div>
       </div>
     )
   }

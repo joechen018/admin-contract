@@ -3,9 +3,46 @@ const czr = new Czr();
 let czrUrl = 'http://127.0.0.1:8765/';
 czr.Contract.setProvider(czrUrl);
 
-const address = 'czr_3CgoBhLRWcagC5BmKjryG6zbjALekDziMjr37tXabh1qNAd4SL';
+const address = 'czr_4pzeoqnLGtzbf5zcNM11LyxvTXUNumb5KQqt3C2RJ7HGbpf8xP';
 
 const abi = [
+  {
+    constant: false,
+    inputs: [
+      {
+        name: "addr",
+        type: "address"
+      },
+      {
+        name: "index",
+        type: "uint256"
+      }
+    ],
+    name: "removeCZRLock",
+    outputs: [],
+    payable: false,
+    stateMutability: "nonpayable",
+    type: "function"
+  },
+  {
+    constant: true,
+    inputs: [
+      {
+        name: "addr",
+        type: "address"
+      }
+    ],
+    name: "lockLength",
+    outputs: [
+      {
+        name: "",
+        type: "uint256"
+      }
+    ],
+    payable: false,
+    stateMutability: "view",
+    type: "function"
+  },
   {
     constant: false,
     inputs: [
@@ -82,6 +119,32 @@ const abi = [
       {
         name: "addr",
         type: "address"
+      },
+      {
+        name: "startLockTime",
+        type: "uint256"
+      },
+      {
+        name: "amount",
+        type: "uint256"
+      },
+      {
+        name: "lockMonth",
+        type: "uint256"
+      }
+    ],
+    name: "addCZRLock",
+    outputs: [],
+    payable: false,
+    stateMutability: "nonpayable",
+    type: "function"
+  },
+  {
+    constant: false,
+    inputs: [
+      {
+        name: "addr",
+        type: "address"
       }
     ],
     name: "setAdmin",
@@ -124,6 +187,24 @@ const abi = [
     type: "function"
   },
   {
+    constant: false,
+    inputs: [
+      {
+        name: "addr",
+        type: "address"
+      },
+      {
+        name: "limit",
+        type: "uint256"
+      }
+    ],
+    name: "unlockCZR",
+    outputs: [],
+    payable: false,
+    stateMutability: "nonpayable",
+    type: "function"
+  },
+  {
     constant: true,
     inputs: [],
     name: "getUnlockers",
@@ -145,10 +226,59 @@ const abi = [
         type: "address"
       }
     ],
+    name: "test",
+    outputs: [],
+    payable: false,
+    stateMutability: "nonpayable",
+    type: "function"
+  },
+  {
+    constant: false,
+    inputs: [
+      {
+        name: "addr",
+        type: "address"
+      }
+    ],
     name: "setUnlocker",
     outputs: [],
     payable: false,
     stateMutability: "nonpayable",
+    type: "function"
+  },
+  {
+    constant: true,
+    inputs: [
+      {
+        name: "",
+        type: "address"
+      },
+      {
+        name: "",
+        type: "uint256"
+      }
+    ],
+    name: "lockedCZRMap",
+    outputs: [
+      {
+        name: "startLockTime",
+        type: "uint256"
+      },
+      {
+        name: "lockMonth",
+        type: "uint256"
+      },
+      {
+        name: "lockedAmount",
+        type: "uint256"
+      },
+      {
+        name: "unlockedAmount",
+        type: "uint256"
+      }
+    ],
+    payable: false,
+    stateMutability: "view",
     type: "function"
   },
   {
@@ -166,10 +296,75 @@ const abi = [
     type: "function"
   },
   {
-    inputs: [],
-    payable: false,
-    stateMutability: "nonpayable",
-    type: "constructor"
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        name: "addr",
+        type: "address"
+      },
+      {
+        indexed: false,
+        name: "index",
+        type: "uint256"
+      },
+      {
+        indexed: false,
+        name: "startLockTime",
+        type: "uint256"
+      },
+      {
+        indexed: false,
+        name: "lockMonth",
+        type: "uint256"
+      },
+      {
+        indexed: false,
+        name: "lockedAmount",
+        type: "uint256"
+      }
+    ],
+    name: "AddLock",
+    type: "event"
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        name: "addr",
+        type: "address"
+      },
+      {
+        indexed: false,
+        name: "index",
+        type: "uint256"
+      }
+    ],
+    name: "RemoveLock",
+    type: "event"
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        name: "addr",
+        type: "address"
+      },
+      {
+        indexed: false,
+        name: "index",
+        type: "uint256"
+      },
+      {
+        indexed: false,
+        name: "unlockAmount",
+        type: "uint256"
+      }
+    ],
+    name: "Unlock",
+    type: "event"
   },
   {
     anonymous: false,

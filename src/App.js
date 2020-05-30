@@ -1,6 +1,9 @@
 import React, {Component} from 'react';
+import {Grid, Icon, Message} from 'semantic-ui-react'
 import Login from './login';
 import PriviledgeDropdown from './priviledgeDropdown'
+import AddIncentive from './AddIncentive'
+import ViewIncentive from './ViewIncentive'
 
 import './App.css';
 import admin from './abi';
@@ -9,12 +12,15 @@ class App extends Component {
 
   state = {
     owner: '',
+    openLogin: '',
     admins: '',
     unlockers: '',
-    message: '',
+    notif: '',
+    status: '',
     address: '',
     password: '',
-    status: '',
+    loading: '',
+    priviledge: '',
     function: [
               {
                 id: 0,
@@ -59,117 +65,119 @@ class App extends Component {
       });
     }
 
-  setUser = async (address, password, admin, unlocker) => {
-    this.setState({address: address});
-    this.setState({password: password});
-    if (address === this.state.owner) {
-      this.setState({message: "Logged in as: " + address + " (Owner)"});
-    }
-    else if(admin) {
-      this.setState({message: "Logged in as: " + address + " (Admin)"});
-    }
-    else if(unlocker) {
-      this.setState({message: "Logged in as: " + address + " (Unlocker)"});
+  waiting = (wait) => {
+    if(wait === true) {
+      this.setState({loading: true});
     }
     else {
-      this.setState({message: "Logged in as: " + address + " (User)"});
+      this.setState({loading: false});
     }
   }
 
-  logging = () => {
-  this.setState({message: 'Logging in...'});
+  success = (message) => {
+    this.updateList();
+    this.setState({
+      notif: message,
+      status: 'success'
+    });
   }
 
-  logfailed = () => {
-  this.setState({message: 'Login failed. Double check your address and password.'});
+  failed = (message) => {
+    this.updateList();
+    this.setState({
+      notif: message,
+      status: 'failed'
+    });
   }
 
-  waiting = () => {
-  this.setState({status: 'Waiting on transaction success...'});
-  }
-
-  success = () => {
-  this.setState({status: 'Success!'});
-  }
-
-  failed = () => {
-  this.setState({status: 'Transaction failed. Check your inputs and priviledges. See if you are logged in.'});
+  updateList = async () => {
+    const owner = await admin.methods.owner().call();
+    let admins = await admin.methods.getAdmins().call();
+    admins = admins.filter(item => item !== "czr_zero_address")
+    admins = admins.join(", ");
+    let unlockers = await admin.methods.getUnlockers().call();
+    unlockers = unlockers.filter(item => item !== "czr_zero_address")
+    unlockers = unlockers.join(", ");
+    this.setState({
+      owner,
+      admins,
+      unlockers
+    });
   }
 
   async componentDidMount() {
-
-
-    // let opts = {
-    //     from_stable_block_index: 0
-    // };
-    // let utility = {
-    //     init: function () {
-    //         // Start
-    //         utility.EventTest();
-    //     },
-    //     //Event
-    //     EventTest () {
-    //         admin.getPastEvents('NewAdmin', opts)
-    //             .then(function (events) {
-    //                 //
-    //                 console.log(events);
-    //
-    //                 // Control whether to continue
-    //                 if (true) {
-    //                     utility.EventTest();
-    //                 }
-    //             });
-    //
-    //     }
-    // }
-    // utility.init();
-
-    const owner = await admin.methods.owner().call();
-    this.setState({ owner });
-    let admins = await admin.methods.getAdmins().call();
-    admins = admins.filter(item => item !== "0x0000000000000000000000000000000000000000")
-    admins = admins.join(", ");
-    this.setState({ admins });
-    let unlockers = await admin.methods.getUnlockers().call();
-    unlockers = unlockers.filter(item => item !== "0x0000000000000000000000000000000000000000")
-    unlockers = unlockers.join(", ");
-    this.setState({ unlockers });
-    this.setState({message: "CZR Account Login:"});
+    this.updateList();
   }
 
-  onClick = async (event) => {
-  event.preventDefault();
+  // onClick = async (event) => {
+  // event.preventDefault();
+  //
+  // this.setState({message: 'Waiting on transaction success...'});
+  //
+  // const status = await admin.methods.isAdmin(this.state.admin).call();
+  //
+  // console.log(status);
+  // if(status) {
+  //     this.setState({admin_message: "true"});
+  // }
+  // else {
+  //     this.setState({admin_message: "false"});
+  // }
+  // this.setState({message: ''});
+  //
+  // }
 
-  this.setState({message: 'Waiting on transaction success...'});
-
-  const status = await admin.methods.isAdmin(this.state.admin).call();
-
-  console.log(status);
-  if(status) {
-      this.setState({admin_message: "true"});
+  setUser = async (address, password, priviledge) => {
+    this.setState({
+      address,
+      password,
+      priviledge
+    });
   }
-  else {
-      this.setState({admin_message: "false"});
+
+  handleDismiss = async () => {
+    this.setState({
+      status: ''
+    });
   }
-  this.setState({message: ''});
-
-  };
-
 
 
   render() {
+    var loading;
+    if(this.state.loading === true) {
+      loading = <h4><Icon name='circle notched' loading />Processing transaction. This may take a few seconds...</h4>;
+      console.log(loading);
+    }
+    else {
+      loading = '';
+    }
+    var notification;
+    if(this.state.status === 'success') {
+      notification = <Message
+                        onDismiss={this.handleDismiss}
+                        success
+                        header='Success!'
+                        content={this.state.notif}
+                      />;
+    }
+    else if(this.state.status === 'failed') {
+      notification = <Message
+                        onDismiss={this.handleDismiss}
+                        negative
+                        header='Transaction Failed!'
+                        content={this.state.notif}
+                      />;
+    }
+    else {
+      notification = '';
+    }
+
     return (
       <div>
-        <h2>Incentives Contract</h2>
-        <p>
-          Owner: {this.state.owner}
-        </p>
-        <p>
-          Admins: {this.state.admins}
-        </p>
-        <p>
-          Unlockers: {this.state.unlockers}
-        </p>
+        <Login parentCallback = {this.setUser}
+              contract = {admin}/>
+        <div id="content" class="ui container">
+        {notification}
         <h3>
           Contract Priviledges:
         </h3>
@@ -179,26 +187,46 @@ class App extends Component {
           set/remove unlockers, view incentives</p>
         <p><strong>Unlocker:</strong> Unlock incentive plans, view incentives</p>
         <p><strong>User:</strong> View incentives</p>
+        <p>
+          Owner: {this.state.owner}
+        </p>
+        <p>
+          Admins: {this.state.admins}
+        </p>
+        <p>
+          Unlockers: {this.state.unlockers}
+        </p>
         <hr />
-        <h4>{this.state.message}</h4>
-        <Login parentCallback = {this.setUser}
-              contract = {admin}
-              parentlogin = {this.logging}
-              parentloginfail = {this.logfailed}/>
-        <h4>
-                Adjust Priviledges:
-        </h4>
-        <PriviledgeDropdown parentAddress = {this.state.address}
-                  parentPassword = {this.state.password}
-                  parentWaiting = {this.waiting}
-                  parentSuccess = {this.success}
-                  parentFail = {this.failed}
-                  title="Select Option"
-                  list={this.state.function}
-                  resetThenSet={this.resetThenSet}/>
-        <h4>{this.state.status}</h4>
+        {loading}
+        <Grid columns={3}>
+          <Grid.Column>
+            <PriviledgeDropdown parentAddress = {this.state.address}
+                      parentPassword = {this.state.password}
+                      parentWaiting = {this.waiting}
+                      parentSuccess = {this.success}
+                      parentFail = {this.failed}
+                      title="Select Option"
+                      list={this.state.function}
+                      resetThenSet={this.resetThenSet}/>
+          </Grid.Column>
+          <Grid.Column>
+            <AddIncentive parentAddress = {this.state.address}
+                      parentPassword = {this.state.password}
+                      parentWaiting = {this.waiting}
+                      parentSuccess = {this.success}
+                      parentFail = {this.failed}/>
+          </Grid.Column>
+          <Grid.Column>
+            <ViewIncentive parentAddress = {this.state.address}
+                      parentPassword = {this.state.password}
+                      parentWaiting = {this.waiting}
+                      parentSuccess = {this.success}
+                      parentFail = {this.failed}/>
+          </Grid.Column>
+        </Grid>
         <hr />
         </div>
+      </div>
     );
   }
 }
