@@ -3,7 +3,7 @@ const czr = new Czr();
 let czrUrl = 'http://127.0.0.1:8765/';
 czr.Contract.setProvider(czrUrl);
 
-const address = 'czr_3dDTPo57GqwNNoTMJTBWz5wM56139GXBChJEThtzwWWBizRx3W';
+const address = 'czr_3mxeBtWGCUx8x2Wo8P2Pp7ZezfyzJeHH8sX1kUBA6bbV7pAsj2';
 
 const abi = [
   {
@@ -119,7 +119,17 @@ const abi = [
       {
         name: "addr",
         type: "address"
-      },
+      }
+    ],
+    name: "setAdmin",
+    outputs: [],
+    payable: false,
+    stateMutability: "nonpayable",
+    type: "function"
+  },
+  {
+    constant: false,
+    inputs: [
       {
         name: "startLockTime",
         type: "uint256"
@@ -131,23 +141,13 @@ const abi = [
       {
         name: "lockMonth",
         type: "uint256"
-      }
-    ],
-    name: "addCZRLock",
-    outputs: [],
-    payable: false,
-    stateMutability: "nonpayable",
-    type: "function"
-  },
-  {
-    constant: false,
-    inputs: [
+      },
       {
         name: "addr",
         type: "address"
       }
     ],
-    name: "setAdmin",
+    name: "addCZRLock",
     outputs: [],
     payable: false,
     stateMutability: "nonpayable",

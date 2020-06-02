@@ -125,16 +125,20 @@ contract CZRLocker is owned {
         emit RemoveLock(addr, index);
     }
 
-    function addCZRLock(address addr, uint startLockTime, uint amount, uint lockMonth) onlyAdmin public {
+    function addCZRLock(uint startLockTime, uint amount, uint lockMonth, address addr) onlyAdmin public {
         require(amount > 0);
-        if (startLockTime == 0)
-            startLockTime = now;
-        else
-            startLockTime = startLockTime + now;
+        startLockTime = startLockTime + now;
         lockedCZRMap[addr].push(LockedCZR(startLockTime, lockMonth, amount, 0));
         uint index = lockedCZRMap[addr].length - 1;
         emit AddLock(addr, index, startLockTime, lockMonth, amount);
     }
+
+    /* function test(uint startLockTime, uint amount, uint lockMonth, address addr) public view returns(uint, uint, uint) {
+        uint answer = startLockTime;
+        uint answer2 = amount;
+        uint answer3 = lockMonth;
+        return (answer, answer2, answer3);
+    } */
 
     function unlockCZR(address payable addr, uint limit) onlyUnlocker public {
         require(msg.sender == owner);

@@ -13,7 +13,7 @@ const source = fs.readFileSync(srcpath,'utf-8');
 let input={
     "language":'Solidity',
     "sources":{
-        'admin.sol':{
+        'locker.sol':{
             "content":source
         }
     },
@@ -32,15 +32,15 @@ let input={
 }
 
 let output = JSON.parse(solc.compile(JSON.stringify(input)));
-let contractByteCode= output.contracts['admin.sol']['CZRLocker'].evm.bytecode.object;
-let abi= output.contracts['admin.sol']['CZRLocker']['abi'];
+let contractByteCode= output.contracts['locker.sol']['CZRLocker'].evm.bytecode.object;
+let abi= output.contracts['locker.sol']['CZRLocker']['abi'];
 
 const pretty = stringifyObject(abi, {
     indent: '  ',
     singleQuotes: false
 });
 fs.writeFile('./aaa.js', pretty, 'UTF-8', function (err) {
-    err ? console.error(err) : console.log('写入成功');
+    err ? console.error(err) : console.log('Success');
 });
 
 module.exports={

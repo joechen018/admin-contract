@@ -112,7 +112,17 @@
       {
         name: "addr",
         type: "address"
-      },
+      }
+    ],
+    name: "setAdmin",
+    outputs: [],
+    payable: false,
+    stateMutability: "nonpayable",
+    type: "function"
+  },
+  {
+    constant: false,
+    inputs: [
       {
         name: "startLockTime",
         type: "uint256"
@@ -124,23 +134,13 @@
       {
         name: "lockMonth",
         type: "uint256"
-      }
-    ],
-    name: "addCZRLock",
-    outputs: [],
-    payable: false,
-    stateMutability: "nonpayable",
-    type: "function"
-  },
-  {
-    constant: false,
-    inputs: [
+      },
       {
         name: "addr",
         type: "address"
       }
     ],
-    name: "setAdmin",
+    name: "addCZRLock",
     outputs: [],
     payable: false,
     stateMutability: "nonpayable",

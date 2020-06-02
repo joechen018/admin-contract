@@ -19,7 +19,11 @@ class AddIncentive extends Component {
     event.preventDefault();
     this.props.parentWaiting(true);
     let code = 9;
-    await admin.methods.addCZRLock(this.state.add_address, this.state.add_start, this.state.add_amount, this.state.add_month).sendBlock(
+    console.log("address: " + this.state.add_address)
+    console.log("start: " + this.state.add_start)
+    console.log("amount: " + this.state.add_amount)
+    console.log("months: " + this.state.add_month)
+    await admin.methods.addCZRLock(this.state.add_start, this.state.add_amount, this.state.add_month, this.state.add_address).sendBlock(
       {
         from: this.props.parentAddress,
         password: this.props.parentPassword,
