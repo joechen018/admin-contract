@@ -12,6 +12,10 @@ code {
     monospace;
 }
 
+.wrap {
+  word-wrap: break-word;
+}
+
 .ui#content{
   padding-top: 55px;
 }

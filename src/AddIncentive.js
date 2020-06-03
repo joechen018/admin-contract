@@ -19,10 +19,6 @@ class AddIncentive extends Component {
     event.preventDefault();
     this.props.parentWaiting(true);
     let code = 9;
-    console.log("address: " + this.state.add_address)
-    console.log("start: " + this.state.add_start)
-    console.log("amount: " + this.state.add_amount)
-    console.log("months: " + this.state.add_month)
     await admin.methods.addCZRLock(this.state.add_start, this.state.add_amount, this.state.add_month, this.state.add_address).sendBlock(
       {
         from: this.props.parentAddress,
@@ -67,6 +63,7 @@ class AddIncentive extends Component {
           <Form.Field>
             <label>Start Lock Time:</label>
             <Input size = "mini"
+              placeholder = "0 for now"
               name = "start_lock_time"
               value = {this.state.add_start}
               onChange={event => this.setState({add_start: event.target.value})}

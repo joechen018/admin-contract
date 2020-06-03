@@ -3,7 +3,7 @@ const czr = new Czr();
 let czrUrl = 'http://127.0.0.1:8765/';
 czr.Contract.setProvider(czrUrl);
 
-const address = 'czr_3mxeBtWGCUx8x2Wo8P2Pp7ZezfyzJeHH8sX1kUBA6bbV7pAsj2';
+const address = 'czr_4Akpt94ShKgdtakhPUaq9AWb8AUDcpQw9NgP6K529QMMQeeGct';
 
 const abi = [
   {
@@ -114,6 +114,41 @@ const abi = [
     type: "function"
   },
   {
+    constant: true,
+    inputs: [
+      {
+        name: "index",
+        type: "uint256"
+      },
+      {
+        name: "addr",
+        type: "address"
+      }
+    ],
+    name: "czrDetail",
+    outputs: [
+      {
+        name: "",
+        type: "uint256"
+      },
+      {
+        name: "",
+        type: "uint256"
+      },
+      {
+        name: "",
+        type: "uint256"
+      },
+      {
+        name: "",
+        type: "uint256"
+      }
+    ],
+    payable: false,
+    stateMutability: "view",
+    type: "function"
+  },
+  {
     constant: false,
     inputs: [
       {
@@ -192,10 +227,6 @@ const abi = [
       {
         name: "addr",
         type: "address"
-      },
-      {
-        name: "limit",
-        type: "uint256"
       }
     ],
     name: "unlockCZR",
@@ -230,6 +261,25 @@ const abi = [
     outputs: [],
     payable: false,
     stateMutability: "nonpayable",
+    type: "function"
+  },
+  {
+    constant: true,
+    inputs: [
+      {
+        name: "addr",
+        type: "address"
+      }
+    ],
+    name: "balance",
+    outputs: [
+      {
+        name: "",
+        type: "uint256"
+      }
+    ],
+    payable: false,
+    stateMutability: "view",
     type: "function"
   },
   {

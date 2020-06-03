@@ -4,6 +4,7 @@ import Login from './login';
 import PriviledgeDropdown from './priviledgeDropdown'
 import AddIncentive from './AddIncentive'
 import ViewIncentive from './ViewIncentive'
+import UnlockIncentive from './UnlockIncentive'
 
 import './App.css';
 import admin from './abi';
@@ -19,7 +20,9 @@ class App extends Component {
     address: '',
     password: '',
     loading: '',
-    priviledge: ''
+    priviledge: '',
+    contractAccount: '',
+    contractAmount: ''
   };
 
   waiting = (wait) => {
@@ -55,10 +58,13 @@ class App extends Component {
     let unlockers = await admin.methods.getUnlockers().call();
     unlockers = unlockers.filter(item => item !== "czr_zero_address")
     unlockers = unlockers.join(", ");
+    let contractAmount = await admin.methods.balance(this.state.contractAccount).call();
+    contractAmount = parseInt(contractAmount);
     this.setState({
       owner,
       admins,
-      unlockers
+      unlockers,
+      contractAmount
     });
   }
 
@@ -76,7 +82,9 @@ class App extends Component {
     });
   }
 
+
   async componentDidMount() {
+    await this.setState({contractAccount: admin.options["account"]});
     this.updateList();
   }
 
@@ -113,31 +121,50 @@ class App extends Component {
     return (
       <div>
         <Login parentCallback = {this.setUser}/>
+
         <div id="content" class="ui container">
         {notification}
-        <h3>
-          Contract Priviledges:
-        </h3>
-        <p><strong>Owner:</strong> Add/remove/unlock incentive plans, set/remove admins,
-          set/remove unlockers, withdraw CZR from contract, view incentives</p>
-        <p><strong>Admin:</strong> Add/remove/unlock incentive plans,
-          set/remove unlockers, view incentives</p>
-        <p><strong>Unlocker:</strong> Unlock incentive plans, view incentives</p>
-        <p><strong>User:</strong> View incentives</p>
-        <p>
-          Owner: {this.state.owner}
-        </p>
-        <p>
-          Admins: {this.state.admins}
-        </p>
-        <p>
-          Unlockers: {this.state.unlockers}
-        </p>
+        <Grid>
+          <Grid.Column width={11}>
+            <h3>
+              Contract Priviledges:
+            </h3>
+            <p><strong>Owner:</strong> Add/remove/unlock incentive plans, set/remove admins,
+              set/remove unlockers, withdraw CZR from contract, view incentives</p>
+            <p><strong>Admin:</strong> Add/remove/unlock incentive plans,
+              set/remove unlockers, view incentives</p>
+            <p><strong>Unlocker:</strong> Unlock incentive plans, view incentives</p>
+            <p><strong>Everyone:</strong> View incentives</p>
+            <p>
+              Owner: {this.state.owner}
+            </p>
+            <p>
+              Admins: {this.state.admins}
+            </p>
+            <p>
+              Unlockers: {this.state.unlockers}
+            </p>
+          </Grid.Column>
+          <Grid.Column width={5}>
+            <h3>Contract Address:</h3>
+            <p class = "wrap">{this.state.contractAccount}</p>
+            <h3>Contract Balance: {this.state.contractAmount/1000000000000000000} CZR</h3>
+            <p class = "wrap">{this.state.contractAmount} (can)</p>
+            <h3>Pay Contract:</h3>
+          </Grid.Column>
+        </Grid>
         <hr />
         {loading}
         <Grid columns={3}>
           <Grid.Column>
             <PriviledgeDropdown parentAddress = {this.state.address}
+                      parentPassword = {this.state.password}
+                      parentWaiting = {this.waiting}
+                      parentSuccess = {this.success}
+                      parentFail = {this.failed}
+                      />
+            <br />
+            <UnlockIncentive parentAddress = {this.state.address}
                       parentPassword = {this.state.password}
                       parentWaiting = {this.waiting}
                       parentSuccess = {this.success}

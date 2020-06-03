@@ -114,6 +114,18 @@ contract CZRLocker is owned {
 
     mapping(address => LockedCZR[]) public lockedCZRMap;
 
+    function czrDetail(uint index, address addr) public view returns(uint, uint, uint, uint){
+        uint a1 = lockedCZRMap[addr][index].startLockTime;
+        uint a2 = lockedCZRMap[addr][index].lockMonth;
+        uint a3 = lockedCZRMap[addr][index].lockedAmount;
+        uint a4 = lockedCZRMap[addr][index].unlockedAmount;
+        return (a1,a2,a3,a4);
+    }
+
+    function balance(address addr) public view returns(uint) {
+      return addr.balance;
+    }
+
     function lockLength(address addr) public view returns(uint) {
         return lockedCZRMap[addr].length;
     }
@@ -133,20 +145,12 @@ contract CZRLocker is owned {
         emit AddLock(addr, index, startLockTime, lockMonth, amount);
     }
 
-    /* function test(uint startLockTime, uint amount, uint lockMonth, address addr) public view returns(uint, uint, uint) {
-        uint answer = startLockTime;
-        uint answer2 = amount;
-        uint answer3 = lockMonth;
-        return (answer, answer2, answer3);
-    } */
+    function unlockCZR(address payable addr) onlyUnlocker public {
 
-    function unlockCZR(address payable addr, uint limit) onlyUnlocker public {
-        require(msg.sender == owner);
+        // LockedCZR[] memory lockArr = lockedCZRMap[addr];
+        // require(lockArr.length > 0);
 
-        LockedCZR[] memory lockArr = lockedCZRMap[addr];
-        require(lockArr.length > 0);
-
-        uint num = 0;
+        // uint num = 0;
         for (uint i = 0; i < lockedCZRMap[addr].length; i++) {
             // LockedCZR memory lock = lockArr[i];
             if (lockedCZRMap[addr][i].lockedAmount > 0) {
@@ -171,9 +175,9 @@ contract CZRLocker is owned {
                 addr.transfer(unlockAmount);
                 emit Unlock(addr, i, unlockAmount);
 
-                num++;
-                if (limit > 0 && num == limit)
-                    break;
+                // num++;
+                // if (limit > 0 && num == limit)
+                //     break;
             }
         }
 

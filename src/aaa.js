@@ -107,6 +107,41 @@
     type: "function"
   },
   {
+    constant: true,
+    inputs: [
+      {
+        name: "index",
+        type: "uint256"
+      },
+      {
+        name: "addr",
+        type: "address"
+      }
+    ],
+    name: "czrDetail",
+    outputs: [
+      {
+        name: "",
+        type: "uint256"
+      },
+      {
+        name: "",
+        type: "uint256"
+      },
+      {
+        name: "",
+        type: "uint256"
+      },
+      {
+        name: "",
+        type: "uint256"
+      }
+    ],
+    payable: false,
+    stateMutability: "view",
+    type: "function"
+  },
+  {
     constant: false,
     inputs: [
       {
@@ -185,10 +220,6 @@
       {
         name: "addr",
         type: "address"
-      },
-      {
-        name: "limit",
-        type: "uint256"
       }
     ],
     name: "unlockCZR",
@@ -223,6 +254,25 @@
     outputs: [],
     payable: false,
     stateMutability: "nonpayable",
+    type: "function"
+  },
+  {
+    constant: true,
+    inputs: [
+      {
+        name: "addr",
+        type: "address"
+      }
+    ],
+    name: "balance",
+    outputs: [
+      {
+        name: "",
+        type: "uint256"
+      }
+    ],
+    payable: false,
+    stateMutability: "view",
     type: "function"
   },
   {
