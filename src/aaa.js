@@ -1,23 +1,5 @@
 [
   {
-    constant: false,
-    inputs: [
-      {
-        name: "addr",
-        type: "address"
-      },
-      {
-        name: "index",
-        type: "uint256"
-      }
-    ],
-    name: "removeCZRLock",
-    outputs: [],
-    payable: false,
-    stateMutability: "nonpayable",
-    type: "function"
-  },
-  {
     constant: true,
     inputs: [
       {
@@ -322,6 +304,24 @@
     ],
     payable: false,
     stateMutability: "view",
+    type: "function"
+  },
+  {
+    constant: false,
+    inputs: [
+      {
+        name: "index",
+        type: "uint256"
+      },
+      {
+        name: "addr",
+        type: "address"
+      }
+    ],
+    name: "removeCZRLock",
+    outputs: [],
+    payable: false,
+    stateMutability: "nonpayable",
     type: "function"
   },
   {

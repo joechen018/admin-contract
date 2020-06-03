@@ -3,27 +3,9 @@ const czr = new Czr();
 let czrUrl = 'http://127.0.0.1:8765/';
 czr.Contract.setProvider(czrUrl);
 
-const address = 'czr_4Akpt94ShKgdtakhPUaq9AWb8AUDcpQw9NgP6K529QMMQeeGct';
+const address = 'czr_4rGz1vYWh3GmnFhdo8yRDPkB7Wo5wBwuQaq1VPjDUiE5KCaCpo';
 
 const abi = [
-  {
-    constant: false,
-    inputs: [
-      {
-        name: "addr",
-        type: "address"
-      },
-      {
-        name: "index",
-        type: "uint256"
-      }
-    ],
-    name: "removeCZRLock",
-    outputs: [],
-    payable: false,
-    stateMutability: "nonpayable",
-    type: "function"
-  },
   {
     constant: true,
     inputs: [
@@ -329,6 +311,24 @@ const abi = [
     ],
     payable: false,
     stateMutability: "view",
+    type: "function"
+  },
+  {
+    constant: false,
+    inputs: [
+      {
+        name: "index",
+        type: "uint256"
+      },
+      {
+        name: "addr",
+        type: "address"
+      }
+    ],
+    name: "removeCZRLock",
+    outputs: [],
+    payable: false,
+    stateMutability: "nonpayable",
     type: "function"
   },
   {

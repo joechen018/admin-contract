@@ -131,7 +131,7 @@ contract CZRLocker is owned {
     }
 
     // for some reason delete does not work
-    function removeCZRLock(address addr, uint index) onlyAdmin public {
+    function removeCZRLock(uint index, address addr) onlyAdmin public {
         require(lockedCZRMap[addr].length > 0 && index < lockedCZRMap[addr].length);
         delete lockedCZRMap[addr][index];      //delete just set all feilds to zero value, not remove item out of array;
         emit RemoveLock(addr, index);

@@ -19,6 +19,7 @@ class ViewIncentive extends Component {
     event.preventDefault();
     this.setState({list: ''});
     let length = '';
+    let realLength = 0;
     let code = '';
     await admin.methods.lockLength(this.state.view_address).call().then(
       data =>
@@ -37,17 +38,26 @@ class ViewIncentive extends Component {
       let add = [];
       for(let i = 0; i < length; i++) {
         let data = await admin.methods.czrDetail(i, this.state.view_address).call();
-        let temp = {startLockTime: parseInt(data["0"]),
+        let temp = {id: i,
+                    startLockTime: parseInt(data["0"]),
                     lockMonth: parseInt(data["1"]),
                     lockedAmount: parseInt(data["2"]),
                     unlockedAmount: parseInt(data["3"])};
-        add.push(temp);
+        if(temp.startLockTime === 0 && temp.lockMonth === 0 && temp.lockedAmount === 0 && temp.unlockedAmount === 0) {
+           console.log("removed");
+        }
+        else {
+          add.push(temp);
+          realLength += 1;
+        }
       }
+      this.setState({length: realLength});
       if(this.state.list !== '') {
         this.setState({list: this.state.list.concat(add)});
         this.props.parentSuccess('Your can now view the incentive plans for this address below.');
       }
-      else {
+      else if (add.length !== 0){
+        // console.log(add);
         this.setState({list: add});
         this.props.parentSuccess('Your can now view the incentive plans for this address below.');
       }
@@ -81,8 +91,9 @@ class ViewIncentive extends Component {
     </Table.Header>);
     for (var i = 0; i < this.state.length; i++) {
       const value = this.state.list[i];
+      console.log(this.state.list[i]);
       children.push(<Table.Row>
-                <Table.Cell>{i}</Table.Cell>
+                <Table.Cell>{value.id}</Table.Cell>
                 <Table.Cell>{this.dateString(value.startLockTime)}</Table.Cell>
                 <Table.Cell>{value.lockMonth}</Table.Cell>
                 <Table.Cell>{value.lockedAmount}</Table.Cell>
